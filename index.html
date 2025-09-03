@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IoT Weather Monitoring Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .card {
+      display: inline-block;
+      background: white;
+      padding: 20px;
+      margin: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      width: 250px;
+    }
+    iframe {
+      border: none;
+      margin: 15px;
+    }
+  </style>
+  <script>
+    async function loadData() {
+      let response = await fetch("https://api.thingspeak.com/channels/3056719/feeds.json?results=1");
+      let data = await response.json();
+      let last = data.feeds[0];
+      document.getElementById("temp").innerText = last.field1 + " °C";
+      document.getElementById("hum").innerText = last.field2 + " %";
+    }
+    setInterval(loadData, 5000); // refresh every 5 sec
+  </script>
+</head>
+<body onload="loadData()">
+  <h1>🌤 IoT Weather Monitoring Dashboard</h1>
+
+  <div class="card">
+    <h2>Temperature</h2>
+    <p id="temp">--</p>
+  </div>
+
+  <div class="card">
+    <h2>Humidity</h2>
+    <p id="hum">--</p>
+  </div>
+
+  <h2>Temperature Graph</h2>
+  <iframe width="450" height="260" 
+    src="https://thingspeak.com/channels/3056719/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true">
+  </iframe>
+
+  <h2>Humidity Graph</h2>
+  <iframe width="450" height="260" 
+    src="https://thingspeak.com/channels/3056719/charts/2?bgcolor=%23ffffff&color=%23008000&dynamic=true">
+  </iframe>
+</body>
+</html>
